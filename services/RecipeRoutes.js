@@ -11,18 +11,33 @@ const getRecipes = async (req, res) => {
   }
 };
 
-// const addRecipe = async (req, res) => {
-//   try {
-//     const response = await Recipe.create(req.body);
-//     res.status(201).send(response.data);
-//   } catch(err) {
-//     res.status(500).send(err);
-//   }
-// };
+const addRecipe = async (req, res) => {
+  console.log(req.body);
+  try {
+    const response = await Recipe.create(req.body);
+    res.status(201).send(response);
+    console.log(response);
+  } catch(err) {
+    res.status(500).send(err);
+  }
+};
+
+const deleteRecipe = async (req, res) => {
+  console.log('test');
+  try{
+    const recipeId = req.params.id;
+    Recipe.findOneAndDelete(recipeId);
+    console.log(recipeId);
+    res.send('Deleted Recipe');
+  }catch(err){
+    res.status(500).send(err);
+  }
+};
 
 const RecipeRoutes = {
   list: getRecipes,
-  // add: addRecipe,
+  add: addRecipe,
+  delete: deleteRecipe,
 };
 
 module.exports = RecipeRoutes;
