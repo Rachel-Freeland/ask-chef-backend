@@ -127,15 +127,15 @@ Slack message, Remo, Merge party
 
 ## User Stories
 
-![Trello Board - User Stories](https://trello.com/b/ouywgYIp/ask-chef)
+![Trello Board - User Stories](./img/https://trello.com/b/ouywgYIp/ask-chef)
 
 ## Data Schema
 
-![Data Schema](Data-schema.png)
+![Data Schema](./img/Data-schema.png)
 
 ## Domain Modeling
 
-![Data Modeling](Domain Model Ask Chef.jpg)
+![Data Modeling](domain-model.jpg)
 
 ## Software Requirements
 
