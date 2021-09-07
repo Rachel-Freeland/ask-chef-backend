@@ -15,7 +15,9 @@ const getRecipes = async (req, res) => {
 
 const getRandomRecipes = async (req, res) => {
   try {
-    const result = await axios.get(`https://api.spoonacular.com/recipes/random?number=5`);
+    const result = await axios.get(
+      `https://api.spoonacular.com/recipes/random?apiKey=${process.env.SPOONACULAR_KEY}&number=5`
+    );
     console.log(result.data);
     res.send(result.data);
   } catch (err) {

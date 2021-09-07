@@ -13,7 +13,7 @@ db.on('error', console.error.bind(console, 'connection error: '));
 db.once('open', () => console.log('Successfully connected to Mognodb'));
 
 app.get('/recipes', RecipeRoutes.list);
-app.get('/recipes/random', RecipeRoutes.random);
+app.get('/recipes', RecipeRoutes.random);
 app.post('/recipes', RecipeRoutes.add);
 app.delete('/recipes/:id', RecipeRoutes.delete);
 
