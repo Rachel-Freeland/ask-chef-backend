@@ -7,9 +7,21 @@ const getRecipes = async (req, res) => {
       `https://api.spoonacular.com/recipes/findByIngredients?apiKey=${process.env.SPOONACULAR_KEY}&ingredients=${req.query.ingredients}&ranking=1`
     );
     console.log(result.data);
-    res.send(result.data[0]);
+    res.send(result.data);
   } catch (err) {
     res.status(404).send(err);
+  }
+};
+const getDataBaseRecipes = async (req, res) => {
+  const user = {};
+  if(req.query.email){
+    user.email = req.query.email;
+  }
+  try{
+    const recipeList = await Recipe.find({});
+    res.send(recipeList);
+  }catch(err){
+    console.log(err);
   }
 };
 
@@ -26,11 +38,13 @@ const addRecipe = async (req, res) => {
 
 const deleteRecipe = async (req, res) => {
   console.log('test');
+  const recipeId = req.params.id;
   try {
-    const recipeId = req.params.id;
-    Recipe.findOneAndDelete(recipeId);
-    console.log(recipeId);
-    res.send('Deleted Recipe Again');
+
+    Recipe.deleteOne({_id: recipeId}).then(deleteOneRecipe => {
+      console.log(deleteOneRecipe);
+      res.send('Deleted Recipe Again');
+    });
   } catch (err) {
     res.status(500).send(err);
   }
@@ -38,8 +52,8 @@ const deleteRecipe = async (req, res) => {
 
 const updateRecipe = async (req, res) => {
   console.log(test);
+  const recipeId = req.params.id;
   try{
-    const recipeId = req.params.id;
     const updateRecipe = await Recipe.findByIdAndUpdate(recipeId, req.body, {new:true});
     res.send(updateRecipe);
   }catch(err){
@@ -49,6 +63,7 @@ const updateRecipe = async (req, res) => {
 
 const RecipeRoutes = {
   list: getRecipes,
+  dbList: getDataBaseRecipes,
   add: addRecipe,
   delete: deleteRecipe,
   update: updateRecipe,
