@@ -51,10 +51,11 @@ const deleteRecipe = async (req, res) => {
 };
 
 const updateRecipe = async (req, res) => {
-  console.log(test);
+  console.log(req.body);
   const recipeId = req.params.id;
   try{
     const updateRecipe = await Recipe.findByIdAndUpdate(recipeId, req.body, {new:true});
+    console.log(req.body);
     res.send(updateRecipe);
   }catch(err){
     res.status(500).send(err);
