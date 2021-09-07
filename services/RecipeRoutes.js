@@ -30,8 +30,19 @@ const deleteRecipe = async (req, res) => {
     const recipeId = req.params.id;
     Recipe.findOneAndDelete(recipeId);
     console.log(recipeId);
-    res.send('Deleted Recipe');
+    res.send('Deleted Recipe Again');
   } catch (err) {
+    res.status(500).send(err);
+  }
+};
+
+const updateRecipe = async (req, res) => {
+  console.log(test);
+  try{
+    const recipeId = req.params.id;
+    const updateRecipe = await Recipe.findByIdAndUpdate(recipeId, req.body, {new:true});
+    res.send(updateRecipe);
+  }catch(err){
     res.status(500).send(err);
   }
 };
@@ -40,6 +51,7 @@ const RecipeRoutes = {
   list: getRecipes,
   add: addRecipe,
   delete: deleteRecipe,
+  update: updateRecipe,
 };
 
 module.exports = RecipeRoutes;

@@ -15,6 +15,7 @@ db.once('open', () => console.log('Successfully connected to Mognodb'));
 app.get('/recipes', RecipeRoutes.list);
 app.post('/recipes', RecipeRoutes.add);
 app.delete('/recipes/:id', RecipeRoutes.delete);
+app.put('/recipes/:id', RecipeRoutes.update);
 
 const PORT = process.env.PORT || 3001;
 
