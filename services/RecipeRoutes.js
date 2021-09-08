@@ -10,7 +10,7 @@ const getRecipes = async (req, res) => {
   //   );
   //   const results = response.data;
 
-  //   for(let i = 0; i < 6; i++) {
+  //   for (let i = 0; i < 6; i++) {
   //     let steps = await acquireSteps(response.data[i]);
   //     results[i].steps = steps;
   //   }
@@ -27,7 +27,7 @@ const getRecipes = async (req, res) => {
 //     const stepResults = await axios.get(
 //       `https://api.spoonacular.com/recipes/${recipe.id}/analyzedInstructions?apiKey=${process.env.SPOONACULAR_KEY}`
 //     );
-//     return stepResults.data[0].steps.map(step => step.step);
+//     return stepResults.data[0].steps.map((step) => step.step);
 //   } catch (err) {
 //     console.log(err);
 //   }
