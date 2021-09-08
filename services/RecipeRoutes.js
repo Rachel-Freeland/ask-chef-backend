@@ -2,7 +2,19 @@
 const Recipe = require('../models/Recipe');
 
 const testData = require('../testData.json');
+const jwt = require('jsonwebtoken');
+const jwksClient = require('jwks-rsa');
 
+const client = jwksClient({
+  jwksUri: 'https://dev-qttzuf0f.us.auth0.com/.well-known/jwks.json'
+});
+
+function getKey(header, callback) {
+  client.getSigningKey(header.kid, function (err, key) {
+    var signingKey = key.publicKey || key.rsaPublicKey;
+    callback(null, signingKey);
+  });
+}
 const getRecipes = async (req, res) => {
   // try {
   //   const response = await axios.get(
