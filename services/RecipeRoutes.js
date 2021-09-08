@@ -3,24 +3,34 @@ const Recipe = require('../models/Recipe');
 
 const getRecipes = async (req, res) => {
   try {
-    const result = await axios.get(
+    const response = await axios.get(
       `https://api.spoonacular.com/recipes/findByIngredients?apiKey=${process.env.SPOONACULAR_KEY}&ingredients=${req.query.ingredients}&ranking=1`
     );
-    console.log(result.data);
-    res.send(result.data);
+    const results = response.data;
+    results.map(async (recipe) => {
+      console.log(recipe.id);
+      const stepResults = await axios.get(
+        `https://api.spoonacular.com/recipes/${recipe.id}/analyzedInstructions?apiKey=${process.env.SPOONACULAR_KEY}`
+      );
+      console.log(stepResults.data);
+      const steps = stepResults.data.map((steps) => steps.step);
+      console.log('STEPS', steps);
+    });
+    console.log(results);
+    res.send(results);
   } catch (err) {
     res.status(404).send(err);
   }
 };
 const getDataBaseRecipes = async (req, res) => {
   const user = {};
-  if(req.query.email){
+  if (req.query.email) {
     user.email = req.query.email;
   }
-  try{
+  try {
     const recipeList = await Recipe.find({});
     res.send(recipeList);
-  }catch(err){
+  } catch (err) {
     console.log(err);
   }
 };
@@ -40,8 +50,7 @@ const deleteRecipe = async (req, res) => {
   console.log('test');
   const recipeId = req.params.id;
   try {
-
-    Recipe.deleteOne({_id: recipeId}).then(deleteOneRecipe => {
+    Recipe.deleteOne({ _id: recipeId }).then((deleteOneRecipe) => {
       console.log(deleteOneRecipe);
       res.send('Deleted Recipe Again');
     });
@@ -53,11 +62,11 @@ const deleteRecipe = async (req, res) => {
 const updateRecipe = async (req, res) => {
   console.log(req.body);
   const recipeId = req.params.id;
-  try{
-    const updateRecipe = await Recipe.findByIdAndUpdate(recipeId, req.body, {new:true});
+  try {
+    const updateRecipe = await Recipe.findByIdAndUpdate(recipeId, req.body, { new: true });
     console.log(req.body);
     res.send(updateRecipe);
-  }catch(err){
+  } catch (err) {
     res.status(500).send(err);
   }
 };
