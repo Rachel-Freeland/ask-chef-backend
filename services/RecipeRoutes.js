@@ -7,9 +7,11 @@ const getRecipes = async (req, res) => {
       `https://api.spoonacular.com/recipes/findByIngredients?apiKey=${process.env.SPOONACULAR_KEY}&ingredients=${req.query.ingredients}&ranking=1&number=6`
     );
     const results = response.data;
-    results.steps = response.data.map(aquireSteps);
-    console.log(results.steps);
-    // console.log('STEPS', steps);
+
+    for(let i = 0; i < 6; i++) {
+      let steps = await aquireSteps(response.data[i]);
+      results[i].steps = steps;
+    }
     res.send(results.slice());
   } catch (err) {
     res.status(404).send(err);
@@ -17,19 +19,15 @@ const getRecipes = async (req, res) => {
 };
 
 const aquireSteps = async (recipe) => {
-  // console.log(recipe.id);
   try {
     const stepResults = await axios.get(
       `https://api.spoonacular.com/recipes/${recipe.id}/analyzedInstructions?apiKey=${process.env.SPOONACULAR_KEY}`
     );
-    return stepResults.data.forEach(step => {
-      return step.steps.map(step => step.step);
-    });
+    return stepResults.data[0].steps.map(step => step.step);
   } catch (err) {
     console.log(err);
   }
 };
-
 
 const getDataBaseRecipes = async (req, res) => {
   const user = {};
