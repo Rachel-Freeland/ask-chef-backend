@@ -61,18 +61,18 @@ const getDataBaseRecipes = async (req, res) => {
 };
 
 const checkSavedRecipes = async (req, res) => {
-  const token = req.headers.authorization.split(' ')[1];
-  jwt.verify(token, getKey, {}, function (err, user) {
-    if (err) {
-      res.status(500).send(err);
-    } else {
-      let userEmail = user.email;
-      Recipe.find({ email: userEmail }, (err, recipes) => {
-        console.log(recipes);
-        res.send(recipes);
-      });
-    }
-  });
+  let found = undefined;
+  try {
+    found = await Recipe.find({ email: req.query.email, id: req.query.id }, () => {
+      res.send({ saved: true });
+    });
+  } catch(err) {
+    console.log(err);
+    res.send({ saved: false });
+  }
+  if(found === undefined) {
+    res.send({ saved: false });
+  }
 };
 
 const addRecipe = async (req, res) => {
