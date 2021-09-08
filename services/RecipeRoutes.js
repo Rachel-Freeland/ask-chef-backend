@@ -1,6 +1,20 @@
 const axios = require('axios');
 const Recipe = require('../models/Recipe');
 
+// --------- AUTH0 header stuff ---------
+const jwt = require('jsonwebtoken');
+const jwksClient = require('jwks-rsa');
+
+const client = jwksClient({
+  jwksUri: 'https://dev-qttzuf0f.us.auth0.com/.well-known/jwks.json'
+});
+function getKey(header, callback) {
+  client.getSigningKey(header.kid, function (err, key) {
+    var signingKey = key.publicKey || key.rsaPublicKey;
+    callback(null, signingKey);
+  });
+}
+//-------------------Landing Routes---------------------
 const getRecipes = async (req, res) => {
   try {
     const response = await axios.get(
@@ -30,29 +44,44 @@ const aquireSteps = async (recipe) => {
   }
 };
 
-
+//-------------------Profile Routes---------------------
 const getDataBaseRecipes = async (req, res) => {
-  const user = {};
-  if (req.query.email) {
-    user.email = req.query.email;
-  }
-  try {
-    const recipeList = await Recipe.find({});
-    res.send(recipeList);
-  } catch (err) {
-    console.log(err);
-  }
+  const token = req.headers.authorization.split(' ')[1];
+  jwt.verify(token, getKey, {}, function (err, user) {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      let userEmail = user.email;
+      Recipe.find({ email: userEmail }, (err, recipes) => {
+        console.log(recipes);
+        res.send(recipes);
+      });
+    }
+  });
 };
 
 const addRecipe = async (req, res) => {
   console.log(req.body);
-  try {
-    const response = await Recipe.create(req.body);
-    res.status(201).send(response);
-    console.log(response);
-  } catch (err) {
-    res.status(500).send(err);
-  }
+  const token = req.headers.authorization.split(' ')[1];
+  jwt.verify(token, getKey, {}, function (err, user) {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      const newRecipe = new Recipe({
+        recipe_id: req.body.recipe_id,
+        title: req.body.title,
+        image: req.body.image,
+        steps: req.body.steps,
+        missedIngredientCount: req.body.missedIngredientCount,
+        missedIngredients: req.body.missedIngredients,
+        usedIngredients: req.body.usedIngredients,
+        unusedIngredients: req.body.unusedIngredients,
+        email: user.email,
+      });
+      res.status(201).send(newRecipe);
+      console.log(newRecipe);
+    }
+  });
 };
 
 const deleteRecipe = async (req, res) => {

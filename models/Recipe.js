@@ -9,6 +9,7 @@ const recipeSchema = new mongoose.Schema({
   missedIngredients: Array,
   usedIngredients: Array,
   unusedIngredients: Array,
+  email: String,
 });
 
 const Recipe = mongoose.model('Recipe', recipeSchema);
