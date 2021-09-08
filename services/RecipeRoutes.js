@@ -18,6 +18,7 @@ const getRecipes = async (req, res) => {
   // } catch (err) {
   //   res.status(404).send(err);
   // }
+  console.log(testData);
   res.send(testData);
 };
 
