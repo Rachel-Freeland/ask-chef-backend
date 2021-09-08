@@ -1,50 +1,38 @@
-const axios = require('axios');
+// const axios = require('axios');
 const Recipe = require('../models/Recipe');
 
-// --------- AUTH0 header stuff ---------
-const jwt = require('jsonwebtoken');
-const jwksClient = require('jwks-rsa');
+const testData = require('../testData.json');
 
-const client = jwksClient({
-  jwksUri: 'https://dev-qttzuf0f.us.auth0.com/.well-known/jwks.json'
-});
-function getKey(header, callback) {
-  client.getSigningKey(header.kid, function (err, key) {
-    var signingKey = key.publicKey || key.rsaPublicKey;
-    callback(null, signingKey);
-  });
-}
-//-------------------Landing Routes---------------------
 const getRecipes = async (req, res) => {
-  try {
-    const response = await axios.get(
-      `https://api.spoonacular.com/recipes/findByIngredients?apiKey=${process.env.SPOONACULAR_KEY}&ingredients=${req.query.ingredients}&ranking=1&number=6`
-    );
-    const results = response.data;
-    results.steps = response.data.map(aquireSteps);
-    console.log(results.steps);
-    // console.log('STEPS', steps);
-    res.send(results.slice());
-  } catch (err) {
-    res.status(404).send(err);
-  }
+  // try {
+  //   const response = await axios.get(
+  //     `https://api.spoonacular.com/recipes/findByIngredients?apiKey=${process.env.SPOONACULAR_KEY}&ingredients=${req.query.ingredients}&ranking=1&number=6`
+  //   );
+  //   const results = response.data;
+
+  //   for (let i = 0; i < 6; i++) {
+  //     let steps = await acquireSteps(response.data[i]);
+  //     results[i].steps = steps;
+  //   }
+  //   res.send(results.slice());
+  // } catch (err) {
+  //   res.status(404).send(err);
+  // }
+  console.log(testData);
+  res.send(testData);
 };
 
-const aquireSteps = async (recipe) => {
-  // console.log(recipe.id);
-  try {
-    const stepResults = await axios.get(
-      `https://api.spoonacular.com/recipes/${recipe.id}/analyzedInstructions?apiKey=${process.env.SPOONACULAR_KEY}`
-    );
-    return stepResults.data.forEach(step => {
-      return step.steps.map(step => step.step);
-    });
-  } catch (err) {
-    console.log(err);
-  }
-};
+// const acquireSteps = async (recipe) => {
+//   try {
+//     const stepResults = await axios.get(
+//       `https://api.spoonacular.com/recipes/${recipe.id}/analyzedInstructions?apiKey=${process.env.SPOONACULAR_KEY}`
+//     );
+//     return stepResults.data[0].steps.map((step) => step.step);
+//   } catch (err) {
+//     console.log(err);
+//   }
+// };
 
-//-------------------Profile Routes---------------------
 const getDataBaseRecipes = async (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
   jwt.verify(token, getKey, {}, function (err, user) {
