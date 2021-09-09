@@ -1,7 +1,6 @@
-// const axios = require('axios');
+const axios = require('axios');
 const Recipe = require('../models/Recipe');
 
-const testData = require('../testData.json');
 const jwt = require('jsonwebtoken');
 const jwksClient = require('jwks-rsa');
 
@@ -16,33 +15,32 @@ function getKey(header, callback) {
   });
 }
 const getRecipes = async (req, res) => {
-  // try {
-  //   const response = await axios.get(
-  //     `https://api.spoonacular.com/recipes/findByIngredients?apiKey=${process.env.SPOONACULAR_KEY}&ingredients=${req.query.ingredients}&ranking=1&number=6`
-  //   );
-  //   const results = response.data;
+  try {
+    const response = await axios.get(
+      `https://api.spoonacular.com/recipes/findByIngredients?apiKey=${process.env.SPOONACULAR_KEY}&ingredients=${req.query.ingredients}&ranking=1&number=6`
+    );
+    const results = response.data;
 
-  //   for (let i = 0; i < 6; i++) {
-  //     let steps = await acquireSteps(response.data[i]);
-  //     results[i].steps = steps;
-  //   }
-  //   res.send(results.slice());
-  // } catch (err) {
-  //   res.status(404).send(err);
-  // }
-  res.send(testData);
+    for (let i = 0; i < 6; i++) {
+      let steps = await acquireSteps(response.data[i]);
+      results[i].steps = steps;
+    }
+    res.send(results.slice());
+  } catch (err) {
+    res.status(404).send(err);
+  }
 };
 
-// const acquireSteps = async (recipe) => {
-//   try {
-//     const stepResults = await axios.get(
-//       `https://api.spoonacular.com/recipes/${recipe.id}/analyzedInstructions?apiKey=${process.env.SPOONACULAR_KEY}`
-//     );
-//     return stepResults.data[0].steps.map((step) => step.step);
-//   } catch (err) {
-//     console.log(err);
-//   }
-// };
+const acquireSteps = async (recipe) => {
+  try {
+    const stepResults = await axios.get(
+      `https://api.spoonacular.com/recipes/${recipe.id}/analyzedInstructions?apiKey=${process.env.SPOONACULAR_KEY}`
+    );
+    return stepResults.data[0].steps.map((step) => step.step);
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 const getDataBaseRecipes = async (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
@@ -57,22 +55,6 @@ const getDataBaseRecipes = async (req, res) => {
     }
   });
 };
-
-// const checkSavedRecipes = async (req, res) => {
-//   let found = undefined;
-//   try {
-//     found = await Recipe.find(req.query.id, () => {
-//       // res.send({ saved: true });
-//     });
-//     console.log('FOUND', found);
-//   } catch (err) {
-//     console.log(err);
-//     // res.send({ saved: false });
-//   }
-//   // if(found === undefined) {
-//   // res.send({ saved: false });
-//   // }
-// };
 
 const addRecipe = async (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
@@ -131,7 +113,6 @@ const RecipeRoutes = {
   add: addRecipe,
   delete: deleteRecipe,
   update: updateRecipe,
-  // check: checkSavedRecipes,
 };
 
 module.exports = RecipeRoutes;
