@@ -30,7 +30,6 @@ const getRecipes = async (req, res) => {
   // } catch (err) {
   //   res.status(404).send(err);
   // }
-  console.log(testData);
   res.send(testData);
 };
 
@@ -76,7 +75,6 @@ const checkSavedRecipes = async (req, res) => {
 };
 
 const addRecipe = async (req, res) => {
-  console.log(req.body);
   const token = req.headers.authorization.split(' ')[1];
   jwt.verify(token, getKey, {}, function (err, user) {
     if (err) {
@@ -93,19 +91,20 @@ const addRecipe = async (req, res) => {
         unusedIngredients: req.body.unusedIngredients,
         email: user.email,
       });
-      res.status(201).send(newRecipe);
-      console.log(newRecipe);
+
+      newRecipe.save((err, saveRecipeData) => {
+        res.status(201).send(saveRecipeData);
+      });
     }
   });
 };
 
 const deleteRecipe = async (req, res) => {
-  console.log('test');
   const recipeId = req.params.id;
   try {
     Recipe.deleteOne({ _id: recipeId }).then((deleteOneRecipe) => {
       console.log(deleteOneRecipe);
-      res.send('Deleted Recipe Again');
+      res.status(204).send(deleteOneRecipe);
     });
   } catch (err) {
     res.status(500).send(err);
