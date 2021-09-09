@@ -52,7 +52,6 @@ const getDataBaseRecipes = async (req, res) => {
     } else {
       let userEmail = user.email;
       Recipe.find({ email: userEmail }, (err, recipes) => {
-        console.log(recipes);
         res.send(recipes);
       });
     }
@@ -118,7 +117,9 @@ const updateRecipe = async (req, res) => {
   try {
     const updateRecipe = await Recipe.findByIdAndUpdate(recipeId, req.body, { new: true });
     console.log(req.body);
-    res.send(updateRecipe);
+    updateRecipe.save((err, updatedRecipe) => {
+      res.status(200).send(updatedRecipe);
+    });
   } catch (err) {
     res.status(500).send(err);
   }
