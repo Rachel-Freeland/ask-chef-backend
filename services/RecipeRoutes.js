@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const jwksClient = require('jwks-rsa');
 
 const client = jwksClient({
-  jwksUri: 'https://dev-qttzuf0f.us.auth0.com/.well-known/jwks.json'
+  jwksUri: 'https://dev-qttzuf0f.us.auth0.com/.well-known/jwks.json',
 });
 
 function getKey(header, callback) {
@@ -59,20 +59,21 @@ const getDataBaseRecipes = async (req, res) => {
   });
 };
 
-const checkSavedRecipes = async (req, res) => {
-  let found = undefined;
-  try {
-    found = await Recipe.find({ email: req.query.email, id: req.query.id }, () => {
-      res.send({ saved: true });
-    });
-  } catch(err) {
-    console.log(err);
-    res.send({ saved: false });
-  }
-  if(found === undefined) {
-    res.send({ saved: false });
-  }
-};
+// const checkSavedRecipes = async (req, res) => {
+//   let found = undefined;
+//   try {
+//     found = await Recipe.find(req.query.id, () => {
+//       // res.send({ saved: true });
+//     });
+//     console.log('FOUND', found);
+//   } catch (err) {
+//     console.log(err);
+//     // res.send({ saved: false });
+//   }
+//   // if(found === undefined) {
+//   // res.send({ saved: false });
+//   // }
+// };
 
 const addRecipe = async (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
@@ -129,7 +130,7 @@ const RecipeRoutes = {
   add: addRecipe,
   delete: deleteRecipe,
   update: updateRecipe,
-  check: checkSavedRecipes,
+  // check: checkSavedRecipes,
 };
 
 module.exports = RecipeRoutes;
