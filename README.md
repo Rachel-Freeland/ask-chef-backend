@@ -1,5 +1,7 @@
 # Ask Chef - Backend
 
+### Site deployed on Netlify [here](https://askchef.netlify.app/)
+
 ## Team:
 
 - Antoine Charette
